@@ -37,6 +37,21 @@ limiter = Limiter(
 MAX_TEXT_LEN = 20_000  # guardrail against oversized payloads
 
 
+@app.get("/")
+def index():
+    """Landing route so hitting the base URL in a browser isn't a bare 404."""
+    return jsonify({
+        "service": "Provenance Guard",
+        "description": "Estimates whether text is AI-generated and returns a transparency label.",
+        "endpoints": {
+            "POST /submit": "body {text, creator_id} -> classification + label",
+            "POST /appeal": "body {content_id, creator_reasoning} -> status under_review",
+            "GET /log": "recent audit-log entries (newest first)",
+            "GET /health": "liveness probe",
+        },
+    })
+
+
 @app.get("/health")
 def health():
     return jsonify({"status": "ok"})
