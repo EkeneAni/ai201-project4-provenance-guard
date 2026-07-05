@@ -95,10 +95,12 @@ APPEAL FLOW
 - **Measures:** a holistic semantic judgment of how "AI-generated" the text reads —
   coherence, generic phrasing, characteristic transitions/hedging, distributional
   typicality. Output: `P(AI)` in `0–1`.
+
 - **Why it differs (human vs. AI):** LLMs generate high-probability,
   distributionally "average" prose — smooth structure, balanced hedging, telltale
   connectives. A large model recognizes its own family's fingerprints; human writing
   carries idiosyncratic voice and uneven emphasis that reads as atypical.
+
 - **Blind spot:** no ground truth — a vibe judgment that can be *confidently wrong*.
   Shares blind spots with what it judges: a different model family, a
   paraphraser/"humanizer", or light human editing can fool it. Non-deterministic and
@@ -109,9 +111,11 @@ APPEAL FLOW
 - **Measures:** statistical regularity of surface form — sentence-length variance
   ("burstiness"), type-token ratio (lexical diversity), punctuation density —
   combined into a `0–1` "how AI-uniform" score.
+
 - **Why it differs (human vs. AI):** AI text trends toward low variance — uniform
   sentence lengths, even punctuation, smoothed vocabulary. Human writing is *bursty*:
   it mixes short and long sentences and varies diversity. Uniformity → higher AI score.
+  
 - **Blind spot:** blind to meaning — only sees shape. A human in a uniform register
   (legal, technical, listicles, or just a plain writer) scores as AI. A **poem or
   lyric with heavy repetition and simple vocabulary** scores as AI. AI text prompted

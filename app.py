@@ -9,6 +9,34 @@ Full pipeline (Milestone 5):
 
 Detection signals live in signals.py, scoring/labels in scoring.py, the
 append-only audit log in audit.py, and current submission state in store.py.
+
+TO RUN A TEST (POST), USE THE CODE BELOW. It saves the response so the
+content_id is available for the appeal step — no copy/paste needed.
+$body = @{ text = "I'm not feeling well today"; creator_id = "me" } | ConvertTo-Json
+$submission = Invoke-RestMethod -Uri http://127.0.0.1:5000/submit -Method Post -ContentType "application/json" -Body $body
+$submission
+
+TO AUDIT A TEST (GET), USE THE CODE BELOW
+Invoke-RestMethod -Uri http://127.0.0.1:5000/log | ConvertTo-Json -Depth 6
+
+TO APPEAL A RESULT (POST), USE THE CODE BELOW. It reuses $submission.content_id
+from the submit step above, so you never hand-copy the id. (Appealing a
+content_id the server doesn't know returns 404 "Unknown content_id" — the most
+common reason an appeal seems to "not work".)
+$body = @{ content_id = $submission.content_id; creator_reasoning = "I wrote this myself; I'm a non-native English speaker so my style reads formal." } | ConvertTo-Json
+Invoke-RestMethod -Uri http://127.0.0.1:5000/appeal -Method Post -ContentType "application/json" -Body $body
+
+If you must appeal a specific id in a fresh shell, set it explicitly first:
+$body = @{ content_id = "the-real-id-from-submit"; creator_reasoning = "..." } | ConvertTo-Json
+Invoke-RestMethod on a 4xx throws a red error and HIDES the server's JSON
+message. To see the real reason (e.g. "Unknown content_id"), wrap it:
+try { Invoke-RestMethod -Uri http://127.0.0.1:5000/appeal -Method Post -ContentType "application/json" -Body $body }
+catch { $_.ErrorDetails.Message }
+
+TO CONFIRM OF THE CHANGED AUDIT FROM THE APPEAL, USE THE CODE BELOW
+Invoke-RestMethod -Uri http://127.0.0.1:5000/log | ConvertTo-Json -Depth 6
+
+
 """
 
 import uuid
